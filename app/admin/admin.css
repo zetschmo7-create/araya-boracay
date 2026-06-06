@@ -1,0 +1,195 @@
+/* ARAYA Admin — dark luxury interface */
+.admin-root {
+  --admin-bg: #141210;
+  --admin-surface: #1c1916;
+  --admin-surface-raised: #252119;
+  --admin-border: rgba(201, 184, 162, 0.12);
+  --admin-border-strong: rgba(201, 184, 162, 0.22);
+  --admin-text: #f0e8dc;
+  --admin-text-muted: #9a8f82;
+  --admin-accent: #c9b8a2;
+  --admin-accent-warm: #e4c4a0;
+  --admin-ocean: #5a8a88;
+  --admin-success: #6b9e8a;
+  --admin-warning: #c9956a;
+  --admin-danger: #b86b5c;
+  min-height: 100vh;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  font-family: var(--font-libre), system-ui, sans-serif;
+}
+
+.admin-card {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.5rem;
+}
+
+.admin-card-raised {
+  background: var(--admin-surface-raised);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.5rem;
+}
+
+.admin-input {
+  width: 100%;
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.375rem;
+  padding: 0.625rem 0.875rem;
+  color: var(--admin-text);
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: var(--admin-accent);
+}
+
+.admin-input::placeholder {
+  color: var(--admin-text-muted);
+}
+
+.admin-label {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--admin-text-muted);
+  margin-bottom: 0.375rem;
+}
+
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.admin-btn-primary {
+  background: var(--admin-accent-warm);
+  color: var(--admin-bg);
+  border-color: var(--admin-accent-warm);
+}
+
+.admin-btn-primary:hover:not(:disabled) {
+  background: #f0d4b0;
+}
+
+.admin-btn-secondary {
+  background: transparent;
+  color: var(--admin-accent);
+  border-color: var(--admin-border-strong);
+}
+
+.admin-btn-secondary:hover:not(:disabled) {
+  border-color: var(--admin-accent);
+  background: rgba(201, 184, 162, 0.06);
+}
+
+.admin-btn-ghost {
+  background: transparent;
+  color: var(--admin-text-muted);
+  border-color: transparent;
+}
+
+.admin-btn-ghost:hover:not(:disabled) {
+  color: var(--admin-text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-stat-value {
+  font-family: var(--font-cormorant), serif;
+  font-size: 2.25rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--admin-accent-warm);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--admin-text-muted);
+  border-bottom: 1px solid var(--admin-border);
+  font-weight: 400;
+}
+
+.admin-table td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--admin-border);
+  vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  border: 1px solid var(--admin-border);
+}
+
+.admin-badge-high {
+  color: var(--admin-warning);
+  border-color: rgba(201, 149, 106, 0.4);
+  background: rgba(201, 149, 106, 0.08);
+}
+
+.admin-badge-new {
+  color: var(--admin-ocean);
+  border-color: rgba(90, 138, 136, 0.4);
+  background: rgba(90, 138, 136, 0.08);
+}
+
+.admin-badge-won {
+  color: var(--admin-success);
+  border-color: rgba(107, 158, 138, 0.4);
+  background: rgba(107, 158, 138, 0.08);
+}
+
+.admin-badge-lost {
+  color: var(--admin-danger);
+  border-color: rgba(184, 107, 92, 0.4);
+  background: rgba(184, 107, 92, 0.08);
+}
+
+.admin-prose {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--admin-text);
+  white-space: pre-wrap;
+}
+
+.admin-divider {
+  height: 1px;
+  background: var(--admin-border);
+  margin: 1.5rem 0;
+}
