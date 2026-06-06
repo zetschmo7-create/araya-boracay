@@ -1,4 +1,3 @@
-import { isBlockedUrl } from "./blocked-domains";
 import type { WebSearchHit } from "./types";
 
 function dedupeHits(hits: WebSearchHit[]): WebSearchHit[] {
@@ -27,7 +26,12 @@ async function searchSerpApi(query: string): Promise<WebSearchHit[]> {
   const googleRes = await fetch(googleUrl.toString());
   if (googleRes.ok) {
     const data = await googleRes.json();
-    for (const item of data.organic_results ?? []) {
+    const organic = data.organic_results ?? [];
+    console.log(
+      `[lead-finder] SerpAPI Google organic results for "${query}":`,
+      organic.length,
+    );
+    for (const item of organic) {
       if (item.link) {
         hits.push({
           title: item.title ?? "",
@@ -47,6 +51,11 @@ async function searchSerpApi(query: string): Promise<WebSearchHit[]> {
         });
       }
     }
+  } else {
+    console.error(
+      `[lead-finder] SerpAPI Google error for "${query}":`,
+      googleRes.status,
+    );
   }
 
   const mapsUrl = new URL("https://serpapi.com/search.json");
@@ -58,7 +67,12 @@ async function searchSerpApi(query: string): Promise<WebSearchHit[]> {
   const mapsRes = await fetch(mapsUrl.toString());
   if (mapsRes.ok) {
     const data = await mapsRes.json();
-    for (const item of data.local_results ?? []) {
+    const local = data.local_results ?? [];
+    console.log(
+      `[lead-finder] SerpAPI Maps results for "${query}":`,
+      local.length,
+    );
+    for (const item of local) {
       if (item.website || item.link) {
         hits.push({
           title: item.title ?? "",
@@ -160,7 +174,11 @@ export async function searchPublicWeb(query: string): Promise<{
     );
   }
 
-  const filtered = dedupeHits(hits).filter((h) => h.url && !isBlockedUrl(h.url));
+  const deduped = dedupeHits(hits).filter((h) => h.url);
+  console.log(
+    `[lead-finder] Total hits after dedupe for "${query}":`,
+    deduped.length,
+  );
 
-  return { hits: filtered.slice(0, 12), provider };
+  return { hits: deduped.slice(0, 12), provider };
 }

@@ -25,9 +25,10 @@ export default async function LeadFinderPage() {
           Public Lead Finder
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--admin-text-muted)]">
-          Finds publicly displayed contact details from villa websites,
-          directories, and business listings. Airbnb and Booking.com are excluded.
-          All outreach requires human approval.
+          A lead discovery engine for Boracay villa and condo owners. Shows all
+          public search results — with or without contact details — and uses AI
+          to score fit and suggest research steps. Airbnb and Booking.com are
+          excluded. Only public data; all outreach requires human approval.
         </p>
       </header>
       <LeadFinderClient

@@ -11,6 +11,15 @@ interface ClassifyInput {
   sourcePlatform: string;
 }
 
+const RESEARCH_STEPS_NO_CONTACT = `Suggested manual research steps:
+- Check website contact page
+- Check public Facebook page
+- Check public Instagram profile
+- Search property name + email
+- Search property name + owner
+- Search source domain for public WHOIS/registrant (if appropriate)
+- Search Google Maps listing for phone`;
+
 export async function classifyLeadFinderResult(
   input: ClassifyInput,
 ): Promise<LeadFinderClassification> {
@@ -19,7 +28,11 @@ export async function classifyLeadFinderResult(
     throw new Error("OPENAI_API_KEY is not configured");
   }
 
+  const hasContact = input.emails.length > 0 || input.phones.length > 0;
+
   const prompt = `Analyse this publicly available Boracay property web result for ARAYA luxury villa/condo management lead potential.
+
+ARAYA manages luxury villas and condos in Boracay for discerning owners.
 
 PAGE TITLE: ${input.title}
 URL: ${input.url}
@@ -28,6 +41,9 @@ SNIPPET: ${input.snippet ?? "N/A"}
 PUBLIC EMAILS FOUND: ${input.emails.join(", ") || "none"}
 PUBLIC PHONES FOUND: ${input.phones.join(", ") || "none"}
 EVIDENCE EXCERPT: ${input.evidence || "none"}
+HAS PUBLIC CONTACT: ${hasContact ? "yes" : "no"}
+
+Analyse even if no email/phone was found. Decide if this is worth manual research for a potential villa/condo owner lead.
 
 Classify entity_type as one of:
 - villa_owner_operator
@@ -43,10 +59,13 @@ Return JSON:
   "araya_fit_score": 0-100,
   "priority": "low" | "medium" | "high",
   "fit_rationale": "why this is or isn't a strong ARAYA lead",
-  "outreach_angle": "suggested personalised outreach angle (no email body yet)",
+  "outreach_angle": "suggested angle if contact found, or research angle if not",
   "page_summary": "2 sentence summary",
   "property_name": "business or property name or null",
-  "source_platform": "${input.sourcePlatform}"
+  "source_platform": "${input.sourcePlatform}",
+  "source_type": "e.g. Villa Website, Directory, Google Maps, Agency, Facebook Page, Real Estate Listing",
+  "worth_manual_research": true/false,
+  "next_action": "If no contact: bullet list of specific manual research steps. If contact found: suggested first outreach step."
 }`;
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -61,7 +80,7 @@ Return JSON:
         {
           role: "system",
           content:
-            "You classify Boracay property leads for ARAYA luxury management. Respond only with valid JSON.",
+            "You classify Boracay property leads for ARAYA luxury management. Analyse pages with or without visible contact details. Respond only with valid JSON.",
         },
         { role: "user", content: prompt },
       ],
@@ -80,15 +99,26 @@ Return JSON:
   const entity_type = parsed.entity_type as LeadFinderEntityType;
   const priority = parsed.priority as LeadPriority;
 
+  let next_action = parsed.next_action ?? "";
+  if (!hasContact && !next_action) {
+    next_action = RESEARCH_STEPS_NO_CONTACT;
+  }
+
   return {
     entity_type: entity_type ?? "irrelevant",
-    araya_fit_score: Math.min(100, Math.max(0, Number(parsed.araya_fit_score) || 0)),
+    araya_fit_score: Math.min(
+      100,
+      Math.max(0, Number(parsed.araya_fit_score) || 0),
+    ),
     priority: priority ?? "medium",
     fit_rationale: parsed.fit_rationale ?? "",
     outreach_angle: parsed.outreach_angle ?? "",
     page_summary: parsed.page_summary ?? "",
     property_name: parsed.property_name ?? null,
     source_platform: parsed.source_platform ?? input.sourcePlatform,
+    source_type: parsed.source_type ?? input.sourcePlatform,
+    worth_manual_research: Boolean(parsed.worth_manual_research),
+    next_action,
   };
 }
 
@@ -122,7 +152,7 @@ export async function generateFinderOutreachDraft(input: {
           role: "user",
           content: `Property: ${input.property_name ?? input.page_title ?? "Boracay property"}
 URL: ${input.source_url}
-Email: ${input.contact_email ?? "unknown"}
+Email: ${input.contact_email ?? "unknown — research needed"}
 Summary: ${input.page_summary ?? ""}
 Angle: ${input.outreach_angle ?? ""}
 Rationale: ${input.fit_rationale ?? ""}`,

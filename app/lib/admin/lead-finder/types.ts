@@ -8,6 +8,23 @@ export type LeadFinderEntityType =
   | "hotel_resort"
   | "irrelevant";
 
+export type FinderStatus =
+  | "contact_found"
+  | "research_needed"
+  | "no_contact_found"
+  | "imported"
+  | "duplicate"
+  | "irrelevant";
+
+export interface LeadFinderSearchStats {
+  serpApiReturned: number;
+  resultsSaved: number;
+  contactsFound: number;
+  researchNeeded: number;
+  blockedUrls: number;
+  skippedDuplicates: number;
+}
+
 export interface WebSearchHit {
   title: string;
   url: string;
@@ -31,6 +48,9 @@ export interface LeadFinderClassification {
   page_summary: string;
   property_name: string | null;
   source_platform: string;
+  source_type: string;
+  worth_manual_research: boolean;
+  next_action: string;
 }
 
 export interface LeadFinderResultRow {
@@ -54,6 +74,10 @@ export interface LeadFinderResultRow {
   imported: boolean;
   imported_lead_id: string | null;
   duplicate_of_lead_id: string | null;
+  finder_status: FinderStatus | null;
+  next_action: string | null;
+  source_type: string | null;
+  has_contact: boolean;
   created_at: string;
 }
 

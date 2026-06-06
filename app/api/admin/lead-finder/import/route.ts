@@ -8,13 +8,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { ids } = await request.json();
+  const { ids, researchNeeded } = await request.json();
   if (!Array.isArray(ids) || ids.length === 0) {
     return NextResponse.json({ error: "No results selected" }, { status: 400 });
   }
 
   try {
-    const { imported, skipped } = await importLeadFinderResults(supabase, ids);
+    const { imported, skipped } = await importLeadFinderResults(supabase, ids, {
+      researchNeeded: Boolean(researchNeeded),
+    });
     return NextResponse.json({
       imported,
       skipped,
