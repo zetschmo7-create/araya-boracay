@@ -1,6 +1,6 @@
 import { AdminShell } from "../components/AdminShell";
 
-export default function AdminDashboardLayout({
+export default function LeadFinderLayout({
   children,
 }: {
   children: React.ReactNode;
